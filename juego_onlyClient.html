@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+         @import url('https://fonts.googleapis.com/css2?family=Graduate&family=Oswald:wght@400;500;600;700&family=Tektur&family=Tourney:ital,wght@0,100;0,300;0,400;1,100;1,200;1,400;1,600&display=swap');
+    </style>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <style type="text/css">
+      /* Estilo general del texto */
+
+button{
+  border-radius:0 0 5% 5%;
+  box-shadow: 0 0 5px #ccc inset, 2px 2px 5px rgba(0, 0, 0, 1);
+}
+
+
+/*Estilos creados para pulsadores dinámicos*/
+.contenedor-tecla {
+  /*Posicionamiento y visualizacion*/
+  margin: 0px;
+  padding: 0px;
+  height: 9em;
+  width: 3em;
+
+
+  /*Propiedades del pulsador (contenedor de la tecla)*/
+  background-color: grey;
+  border-left: 1px solid #bbb;
+  border-bottom: 1px solid #bbb;
+  border-radius:0 0 5% 5%;
+  box-shadow: 0 0 5px #ccc inset, 2px 2px 5px rgba(0, 0, 0, 1);
+}
+
+.piano {
+  /*Comportamiento*/
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-end;
+  
+  /*Atributos*/
+  background-color: black;
+  border-radius: 10% 10% 3% 3%;
+}
+
+.tecla-piano {
+  /*Propiedades de la tecla (colores, sombreados...)*/
+  /* cursor: move; */
+  height: 100%;
+  width: 100%;
+  border-left:1px solid #bbb;
+  border-bottom:1px solid #bbb;
+  border-radius:0 0 5% 5%;
+  background-color:#eeeeee;
+  box-shadow: 
+  0 0 5px #eeeeee inset,
+  2px 2px 5px rgba(0,0,0,1);
+}
+
+.arrastrable:active{
+  cursor:move;
+}
+
+/*Propiedades de la teclas activa (al pulsar)*/
+.tecla-piano:active {
+  border-top:1px solid #777;
+  border-left:1px solid #999;
+  border-bottom:1px solid #999;
+  box-shadow:2px 0 3px rgba(0,0,0,0.1) inset,-5px 5px 20px rgba(0,0,0,0.2) inset,0 0 3px rgba(0,0,0,0.2);
+  background:linear-gradient(to bottom,#fff 0%,#e9e9e9 100%)
+}
+
+/*Para los pulsadores estáticos*/
+
+.container2 {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  margin: 2em 0;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+
+.espaciado{
+  justify-content: space-around;
+}
+
+.centrado{
+  justify-content: center;
+}
+
+.centradoVerticalHorizontal_en_flexbox{
+        align-items:center;
+        display: flex;
+        justify-content: center;
+    }
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-align: center;
+}
+
+.aparienciaMarcador{
+        -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0); 
+        box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+        border:outset;
+    }
+
+
+/*A PARTIR DE AQUI ESTOY SOBREESCIBIENDO PARA VER EL COMPORTAMIENTO EN UNA MARIMBA O XYLOFONO*/
+
+.marimba {
+  /*Comportamiento*/
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  /*Atributos*/
+  /* background-color: rgb(97, 74, 74); */
+  border-radius: 0.5em;
+
+
+}
+
+.tecla-marimba {
+  /*Propiedades de la tecla (colores, sombreados...)*/
+  /* cursor: move; */
+  height: 100%;
+  width: 100%;
+  border-left:1px solid #bbb;
+  border-bottom:1px solid #bbb;
+  border-radius:0 0 0.2em 0.2em;
+  /* background:linear-gradient(to bottom,#eeeeee 0%,#fff 100%); */
+  background-color:rgb(145, 28, 28);
+  box-shadow: 
+  0 0 0.2em #eeeeee inset,
+  2px 2px 5px rgba(0,0,0,1);
+}
+
+.tecla-marimba:active {
+  border-left:0.1em solid #999;
+  border-bottom:0.1em solid #999;
+}
+
+
+
+[escuchado]{
+  box-sizing: border-box;
+  border: #00ff0052 0.3em solid;
+  
+}
+
+[acertado]{
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 255, 0, 0.705), transparent);
+  opacity: 1;
+  /* background-image: url("../img/check_circle.png");
+  background-repeat: no-repeat;
+  background-size:100%; */
+}
+
+.cajaMarcador {
+  font-family: 'Tektur';
+  font-size:large;
+  text-align: center;
+  background-color: darkslategray;
+  color: whitesmoke;
+}
+
+.caja {
+    border: solid black 1px;
+    border-radius: 10px;
+    width: 10%;
+    padding: 0.5em;
+    font-family: monospace;
+    font-size:medium;
+    font-weight: bold;
+    margin: 0.5em;
+}
+
+.espaciado{
+    justify-content: space-around;
+}
+
+.centrado{
+    justify-content: center;
+}
+
+
+.alinearDerecha{
+  text-align: right;
+}
+
+.alinearIzquierda{
+  text-align: left;
+}
+
+.centrado{
+  text-align: center;
+}
+
+.medioAncho{
+  width: 85%;
+}
+
+footer {
+  font-size: 0.7em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: darkslategray;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+}
+
+
+    </style>
+    <!-- <link rel="stylesheet" href="./css/estilo_pulsadores.css">
+    <link rel="stylesheet" href="./css/marcador.css"> -->
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+<!-- SCRIPTS DIFERENCIADOS SEGUN FUNCIONALIDAD -->
+<!-- NUEVO SCRIPT
+src="js/functions_drap_and_drop_personalizadas.js" -->
+
+    <script>  
+        function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+// METODO PROPIO CON COMPROBACION
+function comproveAndDelete(ev) {
+  ev.preventDefault();
+  let data = ev.dataTransfer.getData("text"); // id del arrastrable
+  let numIdReceptor = ev.target.id.split("-")[0]; // num id filtrado del receptor
+
+  // Miramos si coincide
+  if (data === numIdReceptor)  {  
+    if (ev.target.hasAttribute('teclaSonora')) { // Si la tecla destino tiene sonido, eliminamos la arrastrable
+
+      document.getElementById(data).remove(); // Eliminamos el arrastrable nos quedamos con el contenedor
+      ev.target.setAttribute("acertado", ""); // Añadimos atributo acertado
+      ev.target.className += " escuchado"; //Añadimos clase escuchado
+    } else { // Si no, hacemos un drop normal
+
+      ev.target.appendChild(document.getElementById(data)); // Pegamos al contenedor
+      document.getElementById(data).setAttribute("draggable", false); //Desactivamos dropable
+  
+      
+      document.getElementById(data).setAttribute("acertado", ""); // Añadimos atributo acertado
+    }
+
+    //Sumamos un acierto
+    //POSIBLEMENTE NO DEBERIA ESTAR AQUI. SE MEZCLAN JS
+    sumarAciertoAlMarcador();
+    sumarIntentoAlMarcador();
+    comprobarJuegoTerminado();
+  } else {
+    sumarIntentoAlMarcador();
+    //Modificamos puntuacion
+    modificarPuntuacion(-5);
+  }
+}
+</script>
+
+<!-- NUEVO SCRIPT
+src="./js/functions_crear_y_asignar_sonidos" -->
+<script>
+      //Función para reproducir un sonido puro
+// Pasamos por parámetro la frequencia (en Hz), la duracion (en ms) y el tipo de sonido
+//Por defecto, duracion en 500 y tipo de sonido en triangle
+function playSound(frequency, duration = 500, type = "sine") {
+  // Crear el contexto de audio
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+
+  // Establecer la frecuencia y el tipo de onda del oscilador
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+  //Puede ser : sine, square, sawtooth, triangle
+  oscillator.type = type;
+
+  // Crear el nodo de ganancia para controlar el volumen
+  const gainNode = audioContext.createGain();
+  gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+
+  // Conectar el oscilador al nodo de ganancia y este al contexto de audio
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  // Iniciar el oscilador y detenerlo después de la duración especificada
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration / 1000);
+}
+
+
+function sonidoMarimba(frecuencia){
+  var context= new AudioContext();
+  var o= context.createOscillator();
+  g=context.createGain();
+  o.connect(g);
+  o.type="sine";
+  o.frequency.value=frecuencia;
+  g.connect(context.destination);
+  o.start(0);
+  g.gain.exponentialRampToValueAtTime(0.00001,context.currentTime +1.5);
+  //Modificando este podemos producir otros sonidos
+  //API AudioParam
+  //g.gain.exponentialRampToValueAtTime(0.1, context.currentTime +0.4);
+}
+
+
+function clickRaton(frecuencia, tipo="teclado"){
+  if (Number.isInteger(frecuencia)){frecuencia+=".000"}; // Si es entero, lo pasamos a String con 3 decimales
+
+  marcarEscuchado(frecuencia);
+
+  // PRODUCE EL SONIDO 
+  if(tipo==="teclado"){ playSound(frecuencia)};
+  if(tipo==="marimba"){sonidoMarimba(frecuencia)};
+  if(tipo==="carrillon"){sonidoCarrillon(frecuencia)};
+
+}
+
+function colorearTeclaEscuchada(frecuencia){
+
+  //Si ya esta escuchado, penalizamos en marcador
+  if (document.getElementById(frecuencia).hasAttribute("escuchado")){ 
+    modificarPuntuacion(-1);
+  }
+
+  //Creamos atributo y clase "escuchado"
+  document.getElementById(frecuencia).setAttribute("escuchado", ""); // Para cambiar su CSS
+  document.getElementById(frecuencia).classList.add("escuchado"); // Para sacar el array de escuchados
+
+}
+
+</script>
+
+<!-- NUEVO SCRIPT
+src="./js/functions_crear_y_desordenar_arrays_sonidos" -->
+<script>
+
+// Devuelve un Array de sonidos.
+// Por parámetro se introducen la cantidad de sonidos que quieres, la separancion entre ellos (por defecto 0.5 = 1 semitono), y la Frecuencia del sonido mas grave
+function crearFecuenciasSonoras(
+  cantidad = 88,
+  separacionEntreNotas = 0.5,
+  FzMin = 27.5
+) {
+  let sonidos = [];
+
+  for (let i = 0; i < cantidad; i++) {
+    let Fz = FzMin * Math.pow(2, (i * separacionEntreNotas) / 6); // Calcula la frecuencia del sonido actual
+    //sonidos.push(`Sonido ${i + 1}: ${Fz.toFixed(3)} Hz`); // Agrega el sonido a la lista
+    sonidos.push(`${Fz.toFixed(3)}`); // Agrega el sonido a la lista
+  }
+  let resultado = {
+    sonidos: sonidos, // Lista de sonidos generados
+    cantidad: cantidad, // Número total de sonidos generados
+  };
+  return resultado; // Retorna el objeto con la lista de sonidos y la cantidad total
+}
+
+// Crear array desordenada
+function crearArrayDesordenado(array) {
+  const copyOfArray = [...array]; // Creamos un nuevo array (asi no trabajará por referencia)
+  for (let i = copyOfArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1)); // Obtiene un índice aleatorio entre 0 e i
+    [copyOfArray[i], copyOfArray[j]] = [copyOfArray[j], copyOfArray[i]]; // Intercambia los elementos en las posiciones i y j
+  }
+  return copyOfArray; // Devuelve el array desordenado
+}
+
+
+</script>
+
+<!-- NUEVO SCRIPT
+src="./js/functions_crearHTML_y_manejar_marcador.js" -->
+<script>
+//FUNCION PARA CREAR TECLA SONORAS (de momento, tipo piano o marimba)
+function crearHTMLTeclasSueltas(array,size=2, tipo='piano') {
+    let contenedor = document.createElement("div");
+  
+    //Creamos un tapete desde donde apareceran los pulsadores
+    contenedor.className = "container2 espaciado";
+  
+    for (let i = 0; i < array.length; i++) {
+      //Obtenemos la frecuencia de la nota que utilizaremos como ID (entre otros)
+      let frecuencia = array[i];
+      if (Number.isInteger(frecuencia)){frecuencia+=".000"}; // Si es entero, lo pasamos a String con 3 decimales
+  
+      let contenedorTecla = document.createElement("div");
+      contenedorTecla.className = "contenedor-tecla-"+tipo;
+      contenedorTecla.style.width = size+"em";
+      contenedorTecla.style.height = size*3+"em";
+  
+      //Añadimos el id (necesario para identificar y para arrastrar)
+      contenedorTecla.id = frecuencia +"-contenedor";
+  
+      /*En el caso que no queramos que se puedan volver atrás las teclas*/
+      contenedorTecla.setAttribute("ondrop", "comproveAndDrop(event)");
+      contenedorTecla.setAttribute("ondragover", "allowDrop(event)");
+  
+      // Creamos una tecla (contenido del contenedorTecla) con su clase
+      let tecla = document.createElement("div");
+      tecla.className = 'tecla-'+tipo+" arrastrable";
+      tecla.id = frecuencia; 
+  
+      // Añadir eventos al click
+      tecla.addEventListener("click", function(){
+  
+        if (tipo=='marimba'){
+          sonidoMarimba(frecuencia);
+        } else {
+          playSound(frecuencia);
+        }
+        colorearTeclaEscuchada(frecuencia);
+        sumarEscuchaAlMarcador();
+  
+      });
+     
+      // Añadimos los atributos de arrastre la tecla
+      tecla.setAttribute("draggable", true);
+      tecla.setAttribute("ondragstart", "drag(event)");
+  
+      // Añadimos los hijos para retornar el contenedor general
+      contenedorTecla.appendChild(tecla);
+      contenedor.appendChild(contenedorTecla);
+    }
+  
+    return contenedor;
+  }
+
+  
+  //FUNCION PARA CREAR UN TECLADO (de momento, tipo piano o marimba)
+  function crearHTMLTeclado(array, sonido = false, size=2, tipo='piano') {
+    let contenedor = document.createElement("div");
+    // Crearemos un conenedor con las propiedades FLEX para poder crear un teclado
+    contenedor.className = "container2 centrado";
+  
+    let teclado = document.createElement("div");
+    teclado.className = tipo;
+    teclado.style.width = (array.length + 1) * size + "em";
+    teclado.style.height = size*4+"em";
+  
+    for (let i = 0; i < array.length; i++) {
+      let frecuencia = array[i];
+      if (Number.isInteger(frecuencia)) {
+        frecuencia += ".000";
+      } // Si es entero, lo pasamos a String con 3 decimales
+  
+      let contenedorTecla = document.createElement("div");
+      contenedorTecla.className = "contenedor-tecla";
+  
+      contenedorTecla.style.width = size+"em";
+  
+      if (tipo=='piano'){
+        contenedorTecla.style.height = size*3+"em";
+      } 
+      else if (tipo == 'marimba'){
+        contenedorTecla.style.height = size*3-(i*(size/array.length))+"em";
+      }
+  
+      //Añadimos el id (necesario para identificar y para arrastrar)
+      contenedorTecla.id = frecuencia+ "-contenedor";
+  
+      //Añadimos las cualidades de soltar arrastre
+      contenedorTecla.setAttribute("ondrop", "comproveAndDelete(event)");
+      contenedorTecla.setAttribute("ondragover", "allowDrop(event)");
+  
+      if (sonido) {
+        // Creamos una tecla (contenido del contenedorTecla)
+        contenedorTecla.className = "tecla-" + tipo;
+        contenedorTecla.setAttribute('teclaSonora','');
+  
+        // Añadir eventos al click
+        contenedorTecla.addEventListener("click", function () {
+          
+          if ( tipo == "marimba") {
+            sonidoMarimba(frecuencia);
+          } else if ( tipo== 'piano'){
+            playSound(frecuencia);
+          }
+          sumarEscuchaAlMarcador();
+        });
+      }
+      // Agregamos hijos
+      teclado.appendChild(contenedorTecla);
+  
+    }
+    contenedor.appendChild(teclado);
+  
+    return contenedor;
+  }
+
+  // Crear los marcadores del juego
+  function crearHTMLMarcador(objetoMarcador){
+  let contenedor = document.createElement("div");
+  contenedor.className = "container medioAncho aparienciaMarcador";
+  contenedor.id= "marcador";
+
+  let filaContadores = document.createElement("div");
+  filaContadores.className ="row flexbox";
+  
+
+  for (const subMarcador in objetoMarcador){
+    const cajaContador = document.createElement("div");
+    cajaContador.className = "col-sm cajaMarcador centradoVerticalHorizontal_en_flexbox";
+    cajaContador.innerHTML = subMarcador+': <span id='+subMarcador+'>'+objetoMarcador[subMarcador]+'</span>';
+
+    filaContadores.appendChild(cajaContador);
+  }
+  contenedor.appendChild(filaContadores);
+  return contenedor;
+}
+    </script>
+
+    <!-- NUEVO SCRIPT
+    src="./js/functions_crearHTML_y_manejar_marcador.js" -->
+    <script>
+// Creamos de manera dinámica el marcador
+
+
+// Para realizar la funcion inicio deben eixistir el id MARCADOR y cada id de sus hijos
+
+function sumarAciertoAlMarcador(pordefecto=1) {
+  let numAciertos = parseInt(document.getElementById("Aciertos").textContent);
+  document.getElementById("Aciertos").innerHTML = numAciertos + pordefecto;
+}
+
+function sumarIntentoAlMarcador(pordefecto=1) {
+  let numIntentos = parseInt(document.getElementById("Intentos").textContent);
+  document.getElementById("Intentos").innerHTML = numIntentos + pordefecto;
+}
+
+//Atencion, aqui la modificacion de la Puntuacion tambien se realiza en la API de arrastrar
+function modificarPuntuacion(puntos) {
+  let numPuntuacion = parseInt(document.getElementById("Puntuacion").textContent);
+  document.getElementById("Puntuacion").innerHTML = numPuntuacion + puntos;
+}
+
+//Atencion, aqui la modificacion de la Puntuacion tambien se realiza en la API de sonidos
+function sumarEscuchaAlMarcador() {
+  let numEscuchas = parseInt(document.getElementById("Escuchados").textContent);
+  document.getElementById("Escuchados").innerHTML = numEscuchas + 1;
+}
+
+function mostrarTotalTeclasConstruidas(total) {
+  document.getElementById("Total").innerHTML = total;
+}
+
+function comprobarJuegoTerminado(){
+  if( parseInt(document.getElementById("Aciertos").textContent) == parseInt(document.getElementById("Total").textContent)){
+
+    alert('¡Enhorabuena! Has terminado el juego. Has obtenido '+parseInt(document.getElementById("Puntuacion").textContent) +' puntos');
+
+    // if (usuarioRegistrado){
+    //   guardarDatosPartida();
+    // }
+  }
+}
+
+// function guardarDatosPartida(){
+
+// }
+
+    </script>
+
+    <title>Juego teclado -HTML,CSS,JS-</title>
+</head>
+
+<body>
+    <h1>Ordena tu propio teclado</h1>
+    <h6>Haz sonar las teclas y deslízalas hacia su lugar correspondiente</h6>
+
+    <div class="container">
+    <div id="divFormulario" class="centrado">
+
+        <form method="GET" id="formJuegoTeclado">
+
+            <fieldset>
+                <legend class="centrado">Propiedades</legend>
+                <table>
+                    <tr>
+                        <td class="alinearDerecha"><label for="teclado">Elije el tipo de teclado:</label></td>
+                        <td class="alinearIzquierda"> <select name="teclado" id="teclado">
+                                <option value="piano" selected>Piano</option>
+                                <option value="marimba">Marimba</option>
+                            </select></td>
+                    </tr>
+
+                    <tr>
+                        <td class="alinearDerecha"><label for="teclado">Elije la cantidad de teclas (sonidos):</label></td>
+                        <td class="alinearIzquierda"><select name="sonidos" id="sonidos">
+                                <option value="3">3</option>
+                                <option value="4" selected>4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="alinearDerecha"><label for="teclado">Elije la distancia entre los sonidos:</label></td>
+                        <td class="alinearIzquierda"><select name="distancia" id="distancia">
+                                <option value="2">2 tonos</option>
+                                <option value="1" selected>1 tono</option>
+                                <option value="0.5">1/2 tono</option>
+                                <option value="0.25">1/4 tono</option>
+                                <option value="0.1">1/10 tono</option>
+                                <option value="0.05">1/20 tono</option>
+                                <option value="0.025">1/40 tono</option>
+                                <option value="0.01">1/100 tono</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="alinearDerecha"> <label for="teclado">Elije la frecuencia del sonido mas grave que escucharás:</label>
+                        </td class="alinearIzquierda">
+                        <td>
+                            <select name="frecuenciaGrave" id="frecuenciaGrave">
+                                <option value="110">110 Hz (A2)</option>
+                                <option value="220">220 Hz (A3)</option>
+                                <option value="440" selected>440 HZ (A4)</option>
+                                <option value="880">880 HZ (A5)</option>
+                                <option value="1720">1720 HZ (A6)</option>
+                            </select>
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td class="alinearDerecha">
+                            <label for="teclado">¿Quieres que las teclas del teclado suenen?</label>
+                        </td>
+                        <td class="alinearIzquierda">
+                            <select name="tecladoConSonido" id="tecladoConSonido">
+                                <option value="true" selected>Si</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                      <td class="alinearDerecha">Tamaño de teclado y teclas:</td>
+                      <td class="alinearIzquierda">
+                          <select name="tamanyo" id="tamanyo">
+                              <option value="1">1</option>
+                              <option value="1.5">1.5</option>
+                              <option value="2">2</option>
+                              <option value="2.5" selected>2.5</option>
+                          </select>
+                      </td>
+                  </tr>
+
+                </table>
+            </fieldset>
+            <br>
+
+            <input class="centrado" type="submit" value="Cargar">
+<br><br>
+        </form>
+    </div>
+  </div>
+
+    <div id="juegoCargado">
+
+    </div>
+
+    <!-- Parte del código a cambia YA! Footer fixed sin solapar informacion -->
+    <div class="espacios">
+      <br><br><br>
+    </div>
+
+    <script>
+        document.getElementById("formJuegoTeclado").addEventListener("submit", function (event) {
+            event.preventDefault(); // Evitar que el formulario se envíe de forma tradicional
+
+
+            document.getElementById("juegoCargado").style.display='inline';
+            
+            // Recogemos las variables si han sido enviadas
+            let tipoteclado = document.getElementById("teclado").value;
+            let cantidadSonidos = document.getElementById("sonidos").value;
+            let distancia = document.getElementById("distancia").value;
+            let tecladoConSonido = document.getElementById("tecladoConSonido").value;
+            let frecuenciaGrave = document.getElementById("frecuenciaGrave").value;
+            let tamanyo = document.getElementById("tamanyo").value;
+
+            let sonoro= (tecladoConSonido=="true")?true:false;
+
+            // Mostrar los valores en pantalla
+            // document.getElementById("tipoTecladoRecibido").textContent = tipoteclado;
+            // document.getElementById("cantidadSonidosRecibido").textContent = cantidadSonidos;
+            // document.getElementById("distanciaRecibida").textContent = distancia;
+            // document.getElementById("frecuenciaGraveElegida").textContent = frecuenciaGrave;
+            // document.getElementById("tecladoSonoroElegido").textContent = tecladoConSonido;
+            // document.getElementById("tamanyoElegido").textContent = tamanyo;
+
+            // Definimos las variables necesarias para los sonidos y para las teclas y teclados
+
+            let infoSonidos = {
+                "numeroDeSonidos": cantidadSonidos,
+                "distanciaEntreSonidos": distancia,
+                "frecuenciaMinima": frecuenciaGrave
+            };
+
+            let infoTeclas = {
+                "tipo": tipoteclado,
+                "tamanyo": tamanyo,
+                "conSonido": sonoro
+            };
+
+            //Definimos las variables necesarias para el marcador
+            let objetoMarcador = {
+                'Aciertos': 0,
+                'Total': infoSonidos.numeroDeSonidos,
+                'Intentos': 0,
+                'Escuchados': 0,
+                'Puntuacion': 100
+            };
+
+            //Definimos los colores para el marcador
+            let arrayColores = ['rojo', 'verde', 'azul', 'amarillo'];
+
+
+            //Creamos el marcador y lo añadimos
+            const marcador = crearHTMLMarcador(objetoMarcador, arrayColores);
+            // document.body.appendChild(marcador);
+            // Cambiamos body por el div #juegoCargado
+            //Primero Borraremos el HTML que tenga anteriormente
+            document.getElementById("juegoCargado").innerHTML="";
+            document.getElementById("juegoCargado").appendChild(marcador);
+
+
+            //Para la funcion crearFrecuenciasSonoras
+            let frecuencias = crearFecuenciasSonoras(infoSonidos.numeroDeSonidos, infoSonidos.distanciaEntreSonidos, infoSonidos.frecuenciaMinima);
+
+            //Para la funcion  crearTeclas y teclados
+            let sonidosDesordenados = crearArrayDesordenado(frecuencias.sonidos);
+            
+            //Creamos un teclado con sonidos ordenados y unas teclas desordenadas
+            const teclasSinOrden = crearHTMLTeclasSueltas(sonidosDesordenados, infoTeclas.tamanyo, infoTeclas.tipo);
+            const teclado = crearHTMLTeclado(frecuencias.sonidos, infoTeclas.conSonido, infoTeclas.tamanyo, infoTeclas.tipo);
+
+            /////////////////
+            //BORRAMOS FORMULARIO
+            ////////////
+            document.getElementById("divFormulario").style.display= 'none';
+            //Añadimos al html
+            // document.body.appendChild(teclado)
+            // document.body.appendChild(teclasSinOrden);
+
+            //IMPORTANTE, CAMBIO DE CÓDIGO RESPECTO AL ANTERIOR
+            //Primero borraremos si hay algo en #juegoCargado
+            //Luego añadiremos los appenChild a #juegoCargado
+            document.getElementById("juegoCargado").appendChild(teclado)
+            document.getElementById("juegoCargado").appendChild(teclasSinOrden);
+
+
+            //Añadimos en el marcador el numero de teclas marcador.js
+            mostrarTotalTeclasConstruidas(infoSonidos.numeroDeSonidos);
+
+            //AÑADIMOS OPCION DE MOSTRAR FORMULARIO
+            //Creamos el contenedor del boton
+            let containerButton = document.createElement("div");
+            containerButton.className = "container centrado";
+            containerButton.id = "containerButton";
+
+
+            //Creamos el boton
+            let button = document.createElement("button");
+            button.addEventListener("click", function(){
+              document.getElementById("divFormulario").style.display= 'inline';
+
+              document.getElementById("juegoCargado").style.display='none';
+
+            });
+
+            button.innerText= "Nuevo juego";
+
+            containerButton.appendChild(button);
+
+            document.getElementById("juegoCargado").appendChild(containerButton);
+
+            //Comprobar si se termina la partida
+
+
+        });
+
+    </script>
+
+    <footer>
+      Programación y diseño: Miguel Salvador Cano ®
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
